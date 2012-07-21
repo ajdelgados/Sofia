@@ -1,4 +1,0 @@
-Sofia
-=====
-
-Software sofia
