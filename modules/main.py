@@ -646,11 +646,7 @@ class MainFrame(wx.aui.AuiMDIParentFrame):
   
 #--Permite desplegar el cuadro de About--#
   def OnAboutBox(self, event):
-<<<<<<< HEAD
     description = """Sofia es una herramienta desarrollada con el lenguaje de programación Python para la modelación de datos, genera el Script SQL para PostgreSQL en esta versión. Es un proyecto de Investigación y Desarrollo del Centro de Investigación en Informatica Aplicada (CENIIA) del Colegio Universitario de Caracas. Creado y dirigido por el Prof. Alejandro Amaro con la colaboraci�n de los estudiantes."""
-=======
-    description = """Sofia es una herramienta desarrollada con el lenguaje de programación Python para la modelación de datos, genera el Script SQL para PostgreSQL en esta versión. Es un proyecto de Investigación y Desarrollo del Centro de Investigación en Informatica Aplicada (CENIIA) del Colegio Universitario de Caracas. Creado y dirigido por el Prof. Alejandro Amaro."""
->>>>>>> 78f9a8bd7d68dbad971952ee564cd2154a30fb0e
     licence = """Aplicacion liberada bajo la licencia GPLv3, para el uso."""
     info = wx.AboutDialogInfo()
     info.SetIcon(wx.Icon("images/sofia.png", wx.BITMAP_TYPE_PNG))
