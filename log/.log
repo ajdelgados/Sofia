@@ -78,3 +78,71 @@ FECHA Y HORA :2012-07-21 22:05:50.526385
 TRANSACCION: Crear Tablas temporales del Modelo
 NOMBRE DEL OBJETO: 'Tabla Relacion'
 ______________________________________________________________________________________________________
+FECHA Y HORA :2012-07-21 22:09:05.916329
+TRANSACCION: Crear Tablas temporales / Crear Modelo
+NOMBRE DEL OBJETO: Modelo: 
+______________________________________________________________________________________________________
+FECHA Y HORA :2012-07-21 22:09:05.928610
+TRANSACCION: Crear Tablas temporales del Modelo
+NOMBRE DEL OBJETO: 'Tabla Modelo'
+______________________________________________________________________________________________________
+FECHA Y HORA :2012-07-21 22:09:05.928863
+TRANSACCION: Crear Tablas temporales del Modelo
+NOMBRE DEL OBJETO: 'Tabla Entidad'
+______________________________________________________________________________________________________
+FECHA Y HORA :2012-07-21 22:09:05.929079
+TRANSACCION: Crear Tablas temporales del Modelo
+NOMBRE DEL OBJETO: 'Tabla Atributo'
+______________________________________________________________________________________________________
+FECHA Y HORA :2012-07-21 22:09:05.929286
+TRANSACCION: Crear Tablas temporales del Modelo
+NOMBRE DEL OBJETO: 'Tabla Relacion'
+______________________________________________________________________________________________________
+FECHA Y HORA :2012-07-21 22:09:07.673420
+TRANSACCION: Crear Tablas temporales / Crear Modelo
+NOMBRE DEL OBJETO: Modelo: 
+______________________________________________________________________________________________________
+FECHA Y HORA :2012-07-21 22:09:07.673995
+TRANSACCION: Crear Tablas temporales del Modelo
+NOMBRE DEL OBJETO: 'Tabla Modelo'
+______________________________________________________________________________________________________
+FECHA Y HORA :2012-07-21 22:09:07.674303
+TRANSACCION: Crear Tablas temporales del Modelo
+NOMBRE DEL OBJETO: 'Tabla Entidad'
+______________________________________________________________________________________________________
+FECHA Y HORA :2012-07-21 22:09:07.674609
+TRANSACCION: Crear Tablas temporales del Modelo
+NOMBRE DEL OBJETO: 'Tabla Atributo'
+______________________________________________________________________________________________________
+FECHA Y HORA :2012-07-21 22:09:07.674904
+TRANSACCION: Crear Tablas temporales del Modelo
+NOMBRE DEL OBJETO: 'Tabla Relacion'
+______________________________________________________________________________________________________
+FECHA Y HORA :2012-07-21 22:09:12.005856
+TRANSACCION: Crear Entidad
+NOMBRE DEL OBJETO: Entidad: Id: 0
+______________________________________________________________________________________________________
+FECHA Y HORA :2012-07-21 22:09:12.006315
+TRANSACCION: Crear Entidad
+NOMBRE DEL OBJETO: Entidad: Nombre:  entidad
+______________________________________________________________________________________________________
+FECHA Y HORA :2012-07-21 22:09:12.006633
+TRANSACCION: Crear Entidad
+NOMBRE DEL OBJETO: Entidad: Descripcion: 
+______________________________________________________________________________________________________
+FECHA Y HORA :2012-07-21 22:09:24.580396
+TRANSACCION: Crear Entidad
+NOMBRE DEL OBJETO: Entidad: Id: 1
+______________________________________________________________________________________________________
+FECHA Y HORA :2012-07-21 22:09:24.580821
+TRANSACCION: Crear Entidad
+NOMBRE DEL OBJETO: Entidad: Nombre:  ttt
+______________________________________________________________________________________________________
+FECHA Y HORA :2012-07-21 22:09:24.581134
+TRANSACCION: Crear Entidad
+NOMBRE DEL OBJETO: Entidad: Descripcion: 
+______________________________________________________________________________________________________
+FECHA Y HORA :2012-07-21 22:09:28.179466
+TRANSACCION: Cerrar Modelo
+NOMBRE DEL OBJETO: Modelo: 
+______________________________________________________________________________________________________

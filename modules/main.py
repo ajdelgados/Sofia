@@ -6,7 +6,6 @@ wxversion.select('2.8')
 import wx
 import wx.aui
 
-
 from id import *
 from model import *
 from graphic import *
