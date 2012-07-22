@@ -20,8 +20,19 @@ class MainFrame(wx.aui.AuiMDIParentFrame):
     self.data = {}
     self.locale = wx.Locale()
     self.locale.AddCatalogLookupPathPrefix('./locale')
-    self.locale.AddCatalog(language[ID_MENU_HELP_es_ES])
-    self.data["idioma"] = ID_MENU_HELP_es_ES
+    if app.config.Read("language"):
+      if app.config.Read("language") != 'English':
+        idioma = app.config.Read("language")
+      else:
+        idioma = ''
+    else:
+      idioma = 'es_ES'
+      app.config.Write("language", idioma)
+      app.config.Flush()
+    self.locale.AddCatalog(idioma)
+    for key, value in language.iteritems():
+        if value == idioma:
+          self.data["idioma"] = key
     self.translation = wx.GetTranslation
     self.app = app
 #--Iniciar el padre con las posiciones y titulo del Frame--#
@@ -519,6 +530,7 @@ class MainFrame(wx.aui.AuiMDIParentFrame):
     if dlg.ShowModal() == wx.ID_OK:
       countMenuBar = 0
       if language[self.data["idioma"]] != '':
+        idioma = language[self.data["idioma"]]
         for menu in self.menuFile.GetMenuItems():
           if menu.GetId() != -2:
             menu.SetText(self.translation(archivo[menu.GetId()]))
@@ -574,10 +586,14 @@ class MainFrame(wx.aui.AuiMDIParentFrame):
           if menu.GetId() != -2:
             menu.SetText(self.translation(archivo[menu.GetId()]))
             menu.SetHelp(self.translation(archivoHelp[menu.GetId()]))
-        self.SetTitle(self.translation(archivo[TITULO]))
-        self.GetActiveChild().lienzo.Caption(self.translation("Canvas"))
-        self.GetActiveChild().nav.Caption(self.translation("Object Browser"))
+        try:
+          self.SetTitle(self.translation(archivo[TITULO]))
+          self.GetActiveChild().lienzo.Caption(self.translation("Canvas"))
+          self.GetActiveChild().nav.Caption(self.translation("Object Browser"))
+        except:
+          pass
       else:
+        idioma = 'English'
         for menu in self.menuFile.GetMenuItems():
           if menu.GetId() != -2:
             menu.SetText(archivo[menu.GetId()])
@@ -634,8 +650,13 @@ class MainFrame(wx.aui.AuiMDIParentFrame):
             menu.SetText(archivo[menu.GetId()])
             menu.SetHelp(archivoHelp[menu.GetId()])
         self.SetTitle(archivo[TITULO])
-        self.GetActiveChild().lienzo.Caption("Canvas")
-        self.GetActiveChild().nav.Caption("Object Browser")
+        try:
+          self.GetActiveChild().lienzo.Caption("Canvas")
+          self.GetActiveChild().nav.Caption("Object Browser")
+        except:
+          pass
+      self.app.config.Write("language", idioma)
+      self.app.config.Flush()
     self.Refresh()
 
   def VerLog(self, event):

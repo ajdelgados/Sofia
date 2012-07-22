@@ -360,9 +360,9 @@ class DataXferValidator(wx.PyValidator):
     if textCtrl.GetClassName() == 'wxChoice':
       self.data[self.key] = textCtrl.GetStringSelection()
     elif self.comboBox:
-      for k, v in self.arrayText.iteritems():
-        if v == textCtrl.GetValue():
-          self.data[self.key] = k
+      for key, value in self.arrayText.iteritems():
+        if value == textCtrl.GetValue():
+          self.data[self.key] = key
     else:
       self.data[self.key] = textCtrl.GetValue()
     return True
