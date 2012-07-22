@@ -142,7 +142,7 @@ class MainFrame(wx.aui.AuiMDIParentFrame):
                       LeftDockable(True).RightDockable(True).CloseButton(False))
 
     if not idf1x:
-      panelIdef1x = self.translationmgr.GetPane("toolBarIdef1x");
+      panelIdef1x = self._mgr.GetPane("toolBarIdef1x");
       panelIdef1x.Hide()
     
     self.toolBarStandard = wx.ToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize,
