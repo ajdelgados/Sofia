@@ -4,4 +4,4 @@ Con la combinacion Ctrl + O puedes abrir un Modelo de datos.
 Sofia ..::Modelador de Datos de CUC::..
 Con la combinacion Ctrl + S puedes guardar el Modelo de datos.
 Con la combinacion Ctrl + Q puedes salir de Sofia.
-Cuando abras Sofia por consola puedes abrir directamente el modelo que necesites: sofia_0-72$python runLinux.py cuc_universidad.dbd
+Cuando abras Sofia por consola puedes abrir directamente el modelo que necesites: sofia_0-71$python runLinux.py  cuc_universidad.dbd

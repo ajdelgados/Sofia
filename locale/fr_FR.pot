@@ -1,0 +1,92 @@
+msgid "&New Model"
+msgstr "&Nouveau modèle"
+
+msgid "Creating a Model"
+msgstr "Crear un modelo"
+
+msgid "&Open"
+msgstr "&Abrir"
+
+msgid "Open Model"
+msgstr "Abrir Modelo"
+
+msgid "&Quit"
+msgstr "&Salir"
+
+msgid "Exit the application"
+msgstr "Salir de la Aplicación"
+
+msgid "&Save"
+msgstr "&Guardar"
+
+msgid "Save Model"
+msgstr "Guardar Modelo"
+
+msgid "Save as"
+msgstr "Guardar como"
+
+msgid "Save model as..."
+msgstr "Guardar Modelo como..."
+
+msgid "Export Model"
+msgstr "Exportar Modelo"
+
+msgid "Refresh\tF5"
+msgstr "Refrescar\tF5"
+
+msgid "Refresh"
+msgstr "Refrescar Lienzo del Modelo"
+
+msgid "New Identifying Relationship"
+msgstr "Nueva Relación Identificadora"
+
+msgid "New No-Identifying Relationship"
+msgstr "Nueva Relación No Identificadora"
+
+msgid "Language"
+msgstr "Idioma"
+
+msgid "English"
+msgstr "Inglés"
+
+msgid "Spanish"
+msgstr "Español"
+
+msgid ""
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid ""
+msgstr ""

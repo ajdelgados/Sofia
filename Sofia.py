@@ -61,7 +61,7 @@ class Sofia(wx.App):
     return self.frame
   
   def Senal(self, signum, frame):
-    if os.uname()[0] == 'Linux':
+    if sys.platform == 'linux2':
       status, enlace = commands.getstatusoutput("cat %s/argumentos.txt" % config.GetDataDir())
       if status == 0:
         self.GetFrame().AbrirModeloDirecto(enlace)
@@ -70,6 +70,6 @@ if __name__ == '__main__':
   app = Sofia()
   for enlace in sys.argv[1:]:
     app.GetFrame().AbrirModeloDirecto(enlace)
-  if os.uname()[0] == 'Linux':
+  if sys.platform == 'linux2':
     signal.signal(signal.SIGUSR1, app.Senal)
   app.MainLoop()

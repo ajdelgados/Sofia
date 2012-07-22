@@ -5,11 +5,13 @@ import wxversion
 wxversion.select('2.8')
 import wx
 import wx.lib.ogl as ogl
+
 from log import *
+from id import *
+from dialog import *
+
 import math
 import datetime
-
-from dialog import *
 
 def str2bool(string):
   return string == 'True'
@@ -98,7 +100,7 @@ class Entidad(ogl.CompositeShape):
     return self
 
   def ModificarEntidad(self, canvas, entidadModificar, entidades):
-    dlg = Dialogos(canvas.frame, "Entidad")
+    dlg = Dialogos(canvas.frame, canvas.frame.parent.Idioma(archivo[ENTIDAD_TITULO]))
     dlg.Entidad(entidadModificar.data)
     if dlg.ShowModal() == wx.ID_OK:
       for elemento2 in entidades:
@@ -153,7 +155,7 @@ class Entidad(ogl.CompositeShape):
   def ValidarNombreEntidad(self, entidades):
     dial = wx.MessageDialog(entidades[0].frame, "Nombre de la Entidad %s exite!" % self.data.get("nombre"), "Error", wx.OK | wx.ICON_ERROR)
     dial.ShowModal()
-    dlg = Dialogos(entidades[0].frame, "Entidad")
+    dlg = Dialogos(entidades[0].frame, entidad[0].frame.parent.Idioma("Entity"))
     dlg.Entidad(self.data)
     if dlg.ShowModal() == wx.ID_OK:
       for elemento in entidades:
@@ -270,7 +272,7 @@ class Entidad(ogl.CompositeShape):
 class Atributo():
   
   def __init__(self, nombre = "", columna = "", descripcion = "", tipoAtributo = "",
-               longitud = 0, primario = False, notNull = False, foranea = False):
+               longitud = "0", primario = False, notNull = False, foranea = False):
     self.id_atributo = 0
     self.id_entidad = 0
     self.nombre = nombre
@@ -339,7 +341,7 @@ class Atributo():
     lst = []
     for atributo in entidad.atributos:
       lst.append(atributo.nombre)
-    dlg = wx.SingleChoiceDialog(canvas.frame, "Â¿CÃºal atributo desea modificar?", "Entidad %s" % entidad.nombre, lst)
+    dlg = wx.SingleChoiceDialog(canvas.frame, canvas.frame.parent.Idioma("What attribute you want to change?"), canvas.frame.parent.Idioma("%s Entity") % entidad.nombre, lst)
     if dlg.ShowModal() == wx.ID_OK:
       response = dlg.GetStringSelection()
       for atributo in entidad.atributos:
@@ -348,7 +350,7 @@ class Atributo():
 
   def ModificarAtributo(self, canvas, entidad, atributoModificar):
     dc = wx.ClientDC(canvas)
-    dlg = Dialogos(canvas.frame, "Atributo")
+    dlg = Dialogos(canvas.frame, canvas.frame.parent.Idioma("Attribute"))
     dlg.Atributo(atributoModificar.data)
     if dlg.ShowModal() == wx.ID_OK:
       for atributo2 in entidad.atributos:
@@ -391,12 +393,12 @@ class Atributo():
     lst = []
     for elemento in entidad.atributos:
       lst.append(elemento.nombre)
-    dlg = wx.SingleChoiceDialog(canvas.frame, "Â¿CÃºal atributo desea eliminar?", "Entidad %s" % entidad.nombre, lst)
+    dlg = wx.SingleChoiceDialog(canvas.frame, canvas.frame.parent.Idioma("What attribute you want to delete?"), canvas.frame.parent.Idioma("%s Entity") % entidad.nombre, lst)
     if dlg.ShowModal() == wx.ID_OK:
       response = dlg.GetStringSelection()
       for elemento in entidad.atributos:
         if elemento.nombre == response:
-          dlg = wx.MessageDialog(canvas.frame, 'Desea remover el atributo %s' % elemento.nombre, 'Eliminar Atributo %s' % elemento.nombre, wx.YES_NO | wx.ICON_QUESTION)
+          dlg = wx.MessageDialog(canvas.frame, canvas.frame.parent.Idioma("Want to remove the attribute %s") % elemento.nombre, canvas.frame.parent.Idioma("Delete Attribute %s") % elemento.nombre, wx.YES_NO | wx.ICON_QUESTION)
           if dlg.ShowModal() == wx.ID_YES:
             self.EliminarAtributo(canvas, entidad, elemento)
 
@@ -429,7 +431,7 @@ class Atributo():
   def ValidarNombreAtributo(self, frame, entidades):
     dial = wx.MessageDialog(frame, "Nombre del Atributo %s exite!" % self.data.get("nombreAtributo"), 'Error', wx.OK | wx.ICON_ERROR)
     dial.ShowModal()
-    dlg = Dialogos(frame, "Atributo")
+    dlg = Dialogos(frame, frame.parent.Idioma("Attribute"))
     dlg.Atributo(self.data)
     if dlg.ShowModal() == wx.ID_OK:
       for elemento in entidades:
@@ -522,7 +524,7 @@ class Relacion(ogl.LineShape):
     for entidad in entidades:
       nombreEntidades.append(entidad.nombre)
     self.data["nombreEntidades"] = nombreEntidades
-    dlg = Dialogos(frame, "Relación")
+    dlg = Dialogos(frame, frame.Idioma("Relationship"))
     dlg.Relacion(self.data)
     if dlg.ShowModal() == wx.ID_OK:
       entidadPadre = Entidad()
@@ -687,7 +689,7 @@ class Relacion(ogl.LineShape):
     for elemento in entidades:
       nombreEntidades.append(elemento.nombre)
     relacion.data["nombreEntidades"] = nombreEntidades
-    dlg = Dialogos(frame, "Relación")
+    dlg = Dialogos(frame, frame.Idioma("Relationship"))
     dlg.Relacion(relacion.data)
     if dlg.ShowModal() == wx.ID_OK:
       self.ModificarRelacion(relacion, frame, canvas, entidades)

@@ -21,7 +21,7 @@ for abrir in sys.argv[1:]:
 
 time.sleep( 5 * random.random())
 
-if os.uname()[0] == 'Linux':
+if sys.platform == 'linux2':
   status, pid = commands.getstatusoutput("pgrep Sofia.py")
 
 if pid:

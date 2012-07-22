@@ -6,7 +6,6 @@ wxversion.select('2.8')
 import wx
 import wx.lib.ogl as ogl
 
-import sqlite3
 from id import *
 from dialog import *
 from graphic import *
@@ -15,7 +14,7 @@ import config
 
 import os
 import codecs
-
+import sqlite3
 from xml.dom import minidom
 
 def str2bool(string):
@@ -25,9 +24,10 @@ class Modelo(wx.aui.AuiMDIChildFrame):
 
   def __init__(self, parent):
     wx.aui.AuiMDIChildFrame.__init__(self, parent, -1, "")
+    self.parent = parent
 
   def CrearModelo(self, parent):
-    dlg = wx.TextEntryDialog(parent, "Coloque el nombre del Modelo:", 'Crear Modelo', '')
+    dlg = wx.TextEntryDialog(parent, parent.Idioma(archivo[ID_MODELO_CREAR_TEXT]), parent.Idioma(archivo[ID_MODELO_CREAR_TITULO]), '')
     if dlg.ShowModal() == wx.ID_OK:
       self.nombre = dlg.GetValue()
       self.nombreArchivo = dlg.GetValue()
@@ -75,10 +75,10 @@ class Modelo(wx.aui.AuiMDIChildFrame):
       self.panel = wx.Panel(self, id=wx.ID_ANY, pos=(0, 0), size=(162, 162))
       self.canvas = OGLCanvas(self, self)
       self._mgr.AddPane(self.canvas, wx.aui.AuiPaneInfo().
-                        Name("Lienzo").Caption("Lienzo").
+                        Name("Lienzo").Caption(self.parent.Idioma("Canvas")).
                         Center().Layer(1).Position(1).CloseButton(False).MaximizeButton(True))
       self._mgr.AddPane(self.panel, wx.aui.AuiPaneInfo().
-                        Name("Nav").Caption("Navegador de Objetos").
+                        Name("Nav").Caption(self.parent.Idioma("Object Browser")).
                         Left().Layer(1).Position(1).CloseButton(True).MaximizeButton(True))
       self.nav = self._mgr.GetPane("Nav")
       self.lienzo = self._mgr.GetPane("Lienzo")
@@ -152,9 +152,10 @@ class Modelo(wx.aui.AuiMDIChildFrame):
       parent.toolBarIdef1x.EnableTool(ID_RELACION_NO_IDENTIF, True)
       parent.toolBarStandard.EnableTool(ID_GENERAR_SCRIPT, True)
       self.num = 0
-      self.parent = parent
+      #self.parent = parent
     else:
       self.num = 1
+      dlg.Close(True)
   
   def GuardarModelo(self, forzar = 0):
     self.log = Log(self)
@@ -162,7 +163,7 @@ class Modelo(wx.aui.AuiMDIChildFrame):
     fileTemporal = self.file
     nombreArchivoTemporal = self.nombreArchivo
     if self.file == os.path.join("%s/temp" % config.GetDataDir(), "%s.dbd" % self.nombreArchivo) or forzar:
-      tempFile = wx.FileDialog(self, message="Guardar Modelo", defaultDir=os.path.expanduser("~"), defaultFile=self.nombre, wildcard="Archivos DBD (*.dbd)|*.dbd", style=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT)
+      tempFile = wx.FileDialog(self, message=self.parent.Idioma(archivoHelp[ID_GUARDAR_MODELO]), defaultDir=os.path.expanduser("~"), defaultFile=self.nombre, wildcard=archivo[ID_MODELO_GUARDAR_ARCHIVO], style=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT)
       if tempFile.ShowModal() == wx.ID_OK:
         fileTemporal = "%s.dbd" % tempFile.GetPath()
         nombreArchivoTemporal = tempFile.GetFilename()
@@ -322,10 +323,10 @@ class Modelo(wx.aui.AuiMDIChildFrame):
       self.panel = wx.Panel(self, id=wx.ID_ANY, pos=(0, 0), size=(162, 162))
       self.canvas = OGLCanvas(self, self)
       self._mgr.AddPane(self.canvas, wx.aui.AuiPaneInfo().
-                        Name("Lienzo").Caption("Lienzo").
+                        Name("Lienzo").Caption(self.parent.Idioma("Canvas")).
                         Center().Layer(1).Position(1).CloseButton(False).MaximizeButton(True))
       self._mgr.AddPane(self.panel, wx.aui.AuiPaneInfo().
-                        Name("Nav").Caption("Navegador de Objetos").
+                        Name("Nav").Caption(self.parent.Idioma("Object Browser")).
                         Left().Layer(1).Position(1).CloseButton(True).MaximizeButton(True))
       self.nav = self._mgr.GetPane("Nav")
       self.lienzo = self._mgr.GetPane("Lienzo")
@@ -369,7 +370,7 @@ class Modelo(wx.aui.AuiMDIChildFrame):
                     atributo.getAttribute("columnName"),
                     atributo.getAttribute("description"),
                     atributo.getAttribute("dataType"),
-                    int(atributo.getAttribute("length")),
+                    atributo.getAttribute("length"),
                     atributo.getAttribute("primary"),
                     atributo.getAttribute("notNull"),
                     atributo.getAttribute("foreignKey")
@@ -460,7 +461,7 @@ class Modelo(wx.aui.AuiMDIChildFrame):
     fileTypes.sort()
     ext = "png"
     if ext in fileTypes:
-      dlg1 = wx.FileDialog(self, message = "Guardar imagen como", defaultDir = os.path.expanduser("~"), defaultFile = self.nombre, wildcard = "|".join(["%s files (*.%s)|*.%s"%(t.upper(), t, t) for t in fileTypes]), style=wx.SAVE|wx.OVERWRITE_PROMPT)
+      dlg1 = wx.FileDialog(self, message = self.parent.Idioma(archivo[ID_MODELO_EXPORTAR_TITULO]), defaultDir = os.path.expanduser("~"), defaultFile = self.nombre, wildcard = "|".join(["%s files (*.%s)|*.%s"%(t.upper(), t, t) for t in fileTypes]), style=wx.SAVE|wx.OVERWRITE_PROMPT)
       try:
         while 1:
           if dlg1.ShowModal() == wx.ID_OK:
