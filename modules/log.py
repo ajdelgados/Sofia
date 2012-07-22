@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # -*- coding: windows-1252 -*-
 
+import config
+
+import os
 import codecs
 
 class Log():
@@ -14,13 +17,16 @@ class Log():
     self.RegistrarEvento("______________________________________________________________________________________________________")
   
   def RegistrarEvento(self, stringLog):
-    self.archivo = codecs.open('log/%s.log' % self.proyecto.nombre, encoding='windows-1252', mode='a')
-    #print stringLog
+    if not os.path.exists("%s/log" % config.GetDataDir()):
+        os.makedirs("%s/log" % config.GetDataDir())
+    self.archivo = codecs.open(os.path.join("%s/log" % config.GetDataDir(), "%s.log" % self.proyecto.nombre), encoding='windows-1252', mode='a')
     self.archivo.write(stringLog + '\n')
     self.archivo.close()
   
   def VerEventos(self):
-    self.archivo = codecs.open('log/%s.log' % self.proyecto.nombre, encoding='windows-1252', mode='r')
+    if not os.path.exists("%s/log" % config.GetDataDir()):
+        os.makedirs("%s/log" % config.GetDataDir())
+    self.archivo = codecs.open(os.path.join("%s/log" % config.GetDataDir(), "%s.log" % self.proyecto.nombre), encoding='windows-1252', mode='r')
     lineas = self.archivo.read()
     self.archivo.close()
     return lineas

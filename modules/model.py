@@ -38,7 +38,9 @@ class Modelo(wx.aui.AuiMDIChildFrame):
       self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Atributo'", "Crear Tablas temporales del Modelo")
       self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Relacion'", "Crear Tablas temporales del Modelo")
       self.SetTitle('%s *' % self.nombre)
-      self.conexion = sqlite3.connect('db/%s.db' % self.nombre)
+      if not os.path.exists("%s/db" % config.GetDataDir()):
+        os.makedirs("%s/db" % config.GetDataDir())
+      self.conexion = sqlite3.connect(os.path.join("%s/db" % config.GetDataDir(), "%s.db" % self.nombre))
       c = self.conexion.cursor()
       try:
         c.execute("CREATE TABLE modelo (id NUMERIC, nombre TEXT, contEntidad NUMERIC, contAtributo NUMERIC, contRelacion NUMERIC)")
@@ -286,7 +288,9 @@ class Modelo(wx.aui.AuiMDIChildFrame):
       self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Entidad'", "Crear Tablas temporales del Modelo")
       self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Atributo'", "Crear Tablas temporales del Modelo")
       self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Relacion'", "Crear Tablas temporales del Modelo")
-      self.conexion = sqlite3.connect('db/%s.db' % self.nombre)
+      if not os.path.exists("%s/db" % config.GetDataDir()):
+        os.makedirs("%s/db" % config.GetDataDir())
+      self.conexion = sqlite3.connect(os.path.join("%s/db" % config.GetDataDir(), "%s.db" % self.nombre))
       c = self.conexion.cursor()
       try:
         c.execute("CREATE TABLE modelo (id NUMERIC, nombre TEXT, contEntidad NUMERIC, contAtributo NUMERIC, contRelacion NUMERIC)")
