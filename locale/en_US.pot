@@ -1,0 +1,251 @@
+msgid "&New Model"
+msgstr "&Nuevo Modelo&New Model"
+
+msgid "Creating a Model"
+msgstr "Creating a Model"
+
+msgid "&Open"
+msgstr "&Abrir"
+
+msgid "Open Model"
+msgstr "Open Model"
+
+msgid "&Quit"
+msgstr "&Quit"
+
+msgid "Exit the application"
+msgstr "Exit the application"
+
+msgid "&Save"
+msgstr "&Save"
+
+msgid "Save Model"
+msgstr "Save Model"
+
+msgid "Save as"
+msgstr "Save as"
+
+msgid "Export Model"
+msgstr "Export Model"
+
+msgid "Refresh\tF5"
+msgstr "Refrescar\tF5"
+
+msgid "Refresh"
+msgstr "Refrescar Lienzo del Modelo"
+
+msgid "New Identifying Relationship"
+msgstr "Nueva Relación Identificadora"
+
+msgid "New No-Identifying Relationship"
+msgstr "Nueva Relación No Identificadora"
+
+msgid "Language"
+msgstr "Idioma"
+
+msgid "English"
+msgstr "Inglés"
+
+msgid "Spanish"
+msgstr "Español"
+
+msgid "Standard Toolbar"
+msgstr "Barra Estandar"
+
+msgid "Show palette Standard Application"
+msgstr "Mostrar paleta Estandar de aplicaciones"
+
+msgid "IDEF1X Toolbar"
+msgstr "Barra IDEF1X"
+
+msgid "View palette helps IDEF1X KIT"
+msgstr "Mostrar paleta de ayuda IDEF1X KIT"
+
+msgid "Object Browser"
+msgstr "Navegador de Objeto"
+
+msgid "Show Object Browser"
+msgstr "Mostrar Navegador de Objeto"
+
+msgid "Cardinality"
+msgstr "Cardinalidad"
+
+msgid "Show Cardinality in Relationships"
+msgstr "Mostrar Cardinalidad en las Relaciones"
+
+msgid "Status Bar"
+msgstr "Barra de Estado"
+
+msgid "New Entity"
+msgstr "Nueva Entidad"
+
+msgid "Create Entity"
+msgstr "Crear una Entidad"
+
+msgid "Create Identifying Relationship"
+msgstr "Crear una Relación Identificadora"
+
+msgid "Create No-Identifying Relationship"
+msgstr "Crear una Relación No Identificador"
+
+msgid "New Relationship"
+msgstr "Nueva Relación"
+
+msgid "Create Relationship"
+msgstr "Crear una Relación"
+
+msgid "Gene&rate SQL Script"
+msgstr "Gene&rar Script SQL"
+
+msgid "Generates the SQL script for PostgreSQL"
+msgstr "Genera el Script SQL del modelo para PostgreSQL"
+
+msgid "About"
+msgstr "Acerca de"
+
+msgid "About Sofia"
+msgstr "Acerca de Sofia"
+
+msgid "View &Log"
+msgstr "Ver &Log"
+
+msgid "&File"
+msgstr "&Archivo"
+
+msgid "&View"
+msgstr "&Ver"
+
+msgid "Tool"
+msgstr "Herramienta"
+
+msgid "&Help"
+msgstr "A&yuda"
+
+msgid "Edit Attribute"
+msgstr "Modificar Atributo"
+
+msgid "Delete Attribute"
+msgstr "Eliminar Atributo"
+
+msgid "Edit Entity"
+msgstr "Modificar Entidad"
+
+msgid "Delete Entity"
+msgstr "Eliminar Entidad"
+
+msgid "New Attribute"
+msgstr "Nuevo Atributo"
+
+msgid "Edit Relationship"
+msgstr "Editar Relación"
+
+msgid "Delete Relationship"
+msgstr "Eliminar Relación"
+
+msgid "..:: Sofia - Data Modeler CUC ::.."
+msgstr "..:: Sofia - Modelador de Datos del CUC ::.."
+
+msgid "Model Name:"
+msgstr "Coloque el nombre del Modelo:"
+
+msgid "Create Model"
+msgstr "Crear Modelo"
+
+msgid "File DBD (*.dbd)|*.dbd|All files (*.*)|*.*"
+msgstr "Archivos DBD (*.dbd)|*.dbd|Todos los archivos (*.*)|*.*"
+
+msgid "File DBD (*.dbd)|*.dbd"
+msgstr "Archivos DBD (*.dbd)|*.dbd"
+
+msgid "Save image as"
+msgstr "Guardar imagen como"
+
+msgid "Entity"
+msgstr "Entidad"
+
+msgid "Name Entity:"
+msgstr "Nombre de la Entidad:"
+
+msgid "Description:"
+msgstr "Descripción:"
+
+msgid "Attribute"
+msgstr "Atributo"
+
+msgid "Attribute Name:"
+msgstr "Nombre del Atributo:"
+
+msgid "Column Name:"
+msgstr "Nombre de la Columna:"
+
+msgid "Data type:"
+msgstr "Tipo de dato:"
+
+msgid "Length:"
+msgstr "Longitud:"
+
+msgid "Primary Key"
+msgstr "Clave Primaria"
+
+msgid "Not Null"
+msgstr "No Nulo"
+
+msgid "File reading is wrong."
+msgstr "Archivo de lectura se encuentra erroneo."
+
+msgid "Error"
+msgstr "Error"
+
+msgid "%s attribute can not be eliminated \nis Foreign Key!"
+msgstr "Atributo %s no se puede eliminar \nes Clave Foranea!"
+
+msgid "Want to remove the attribute %s"
+msgstr "Desea remover el atributo %s"
+
+msgid "Delete Attribute %s"
+msgstr "Eliminar Atributo %s"
+
+msgid "What attribute you want to delete?"
+msgstr "¿Cuál atributo desea eliminar?"
+
+msgid "%s Entity"
+msgstr "Entidad %s"
+
+msgid "What attribute you want to change?"
+msgstr "¿Cuál atributo desea modificar?"
+
+msgid "Relationship"
+msgstr "Relación"
+
+msgid "Type of Relationship:"
+msgstr "Tipo de Relación:"
+
+msgid "Parent:"
+msgstr "Entidad Padre"
+
+msgid "Child:"
+msgstr "Child:"
+
+msgid "Cardinality:"
+msgstr "Cardinalidad:"
+
+msgid "Zero, One o More"
+msgstr "Cero, Uno o mas"
+
+msgid "One o More (P)"
+msgstr "Uno o mas (P)"
+
+msgid "Zero o One (Z)"
+msgstr "Cero o Uno (Z)"
+
+msgid "Exactly:"
+msgstr "Exactamente:"
+
+msgid "Canvas"
+msgstr "Lienzo"
+
+msgid "Language:"
+msgstr "Idioma:"
+
+msgid "Configuration"
+msgstr "Configuración:"
