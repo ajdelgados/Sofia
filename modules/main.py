@@ -530,6 +530,7 @@ class MainFrame(wx.aui.AuiMDIParentFrame):
     if dlg.ShowModal() == wx.ID_OK:
       countMenuBar = 0
       if language[self.data["idioma"]] != '':
+        self.locale.AddCatalog(language[self.data["idioma"]])
         idioma = language[self.data["idioma"]]
         for menu in self.menuFile.GetMenuItems():
           if menu.GetId() != -2:
@@ -666,7 +667,7 @@ class MainFrame(wx.aui.AuiMDIParentFrame):
   
 #--Permite desplegar el cuadro de About--#
   def OnAboutBox(self, event):
-    description = """Sofia es una herramienta desarrollada con el lenguaje de programación Python para la modelación de datos, genera el Script SQL para PostgreSQL en esta versión. Es un proyecto de Investigación y Desarrollo del Centro de Investigación en Informatica Aplicada (CENIIA) del Colegio Universitario de Caracas. Creado y dirigido por el Prof. Alejandro Amaro con la colaboraci�n de los estudiantes."""
+    description = """Sofia es una herramienta desarrollada con el lenguaje de programación Python para la modelación de datos, genera el Script SQL para PostgreSQL en esta versión. Es un proyecto de Investigación y Desarrollo del Centro de Investigación en Informatica Aplicada (CENIIA) del Colegio Universitario de Caracas. Creado y dirigido por el Prof. Alejandro Amaro con la colaboración de los estudiantes."""
     licence = """Aplicacion liberada bajo la licencia GPLv3, para el uso."""
     info = wx.AboutDialogInfo()
     info.SetIcon(wx.Icon("images/sofia.png", wx.BITMAP_TYPE_PNG))
