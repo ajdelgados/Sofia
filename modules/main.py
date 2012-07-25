@@ -260,6 +260,7 @@ class MainFrame(wx.aui.AuiMDIParentFrame):
         dial = wx.MessageDialog(self, self.Idioma(archivo[ID_MODELO_ABRIR_ERROR]), self.Idioma(archivo[ID_MODELO_ABRIR_ERROR_TITULO]), wx.OK | wx.ICON_ERROR)
         dial.ShowModal()
         ejecute.Close(True)
+        self.GetMenuBar().Remove(self.GetMenuBar().FindMenu('&Window'))
 
   def AbrirModeloDirecto(self, file):
     ejecute = Modelo(self)
@@ -268,6 +269,7 @@ class MainFrame(wx.aui.AuiMDIParentFrame):
       dial = wx.MessageDialog(self, self.Idioma(archivo[ID_MODELO_ABRIR_ERROR]), self.Idioma(archivo[ID_MODELO_ABRIR_ERROR_TITULO]), wx.OK | wx.ICON_ERROR)
       dial.ShowModal()
       ejecute.Close(True)
+      self.GetMenuBar().Remove(self.GetMenuBar().FindMenu('&Window'))
   
   def ExportarModelo(self, evt):
     self.GetActiveChild().ExportarModelo()
@@ -481,27 +483,27 @@ class MainFrame(wx.aui.AuiMDIParentFrame):
       ejecute = Atributo()
       ejecute.EliminarAtributo(self.GetActiveChild().canvas, self.atributoAcc.entidad, self.atributoAcc)
     self.GetActiveChild().canvas.Refresh()
-
+  
   def RelacionIdentificadora(self, evt):
     self.GetActiveChild().canvas.SetCursor(wx.CROSS_CURSOR)
     self.GetActiveChild().relacion = 1
-
+  
   def RelacionNoIdentificadora(self, evt):
     self.GetActiveChild().canvas.SetCursor(wx.CROSS_CURSOR)
     self.GetActiveChild().relacion = 2
-
+  
   def ModificarRelacion(self, evt):
     ejecute = Relacion()
     for elemento in self.GetActiveChild().relaciones:
       if elemento.Selected():
         ejecute.DlgModificarRelacion(elemento, self, self.GetActiveChild().canvas, self.GetActiveChild().entidades)
-
+  
   def EliminarRelacion(self, evt):
     ejecute = Relacion()
     for elemento in self.GetActiveChild().relaciones:
       if elemento.Selected():
         ejecute.EliminarRelacion(elemento, self.GetActiveChild().canvas, self.GetActiveChild(), self.GetActiveChild().entidades)
-
+  
   def GenerarScriptSql(self, evt):
     script = SQL().ScriptPostgreSQL(self.GetActiveChild())
     dlg = Dialogos(self, "Script SQL")

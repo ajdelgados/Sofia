@@ -276,162 +276,165 @@ class Modelo(wx.aui.AuiMDIChildFrame):
       return [0]
 
   def AbrirModelo(self, parent, file, nameFile):
-    model = self.GetXMLTag(file, 'model')[0]
-    if model:
-      self.nombre = model.getAttribute("name")
-      self.nombreArchivo = nameFile
-      self.file = file
-      self.SetTitle('%s *' % self.nombre)
-      self.log = Log(self)
-      self.log.ConstruirStringModelo(str(datetime.datetime.now()), "Modelo: " + self.nombreArchivo, "Crear Tablas temporales / Abrir Modelo")
-      self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Modelo'", "Crear Tablas temporales del Modelo")
-      self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Entidad'", "Crear Tablas temporales del Modelo")
-      self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Atributo'", "Crear Tablas temporales del Modelo")
-      self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Relacion'", "Crear Tablas temporales del Modelo")
-      if not os.path.exists("%s/db" % config.GetDataDir()):
-        os.makedirs("%s/db" % config.GetDataDir())
-      self.conexion = sqlite3.connect(os.path.join("%s/db" % config.GetDataDir(), "%s.db" % self.nombre))
-      c = self.conexion.cursor()
-      try:
-        c.execute("CREATE TABLE modelo (id NUMERIC, nombre TEXT, contEntidad NUMERIC, contAtributo NUMERIC, contRelacion NUMERIC)")
-        c.execute("CREATE TABLE entidad (id INTEGER PRIMARY KEY, nombre TEXT, descripcion TEXT)")
-        c.execute("""CREATE TABLE atributo (id INTEGER PRIMARY KEY, id_entidad NUMERIC,
-                  nombre TEXT, nom_colum TEXT, descripcion TEXT, tipo_dato TEXT,
-                  long_dato NUMERIC, cla_prima NUMERIC, cla_fore NUMERIC, atri_n_null NUMERIC)""")
-        c.execute("""CREATE TABLE relacion (id INTEGER PRIMARY KEY, ent_padre NUMERIC,
-                ent_hija NUMERIC, tipo TEXT);""")
-      except:
-        c.execute("DROP TABLE modelo")
-        c.execute("DROP TABLE entidad")
-        c.execute("DROP TABLE atributo")
-        c.execute("DROP TABLE relacion")
-        c.execute("CREATE TABLE modelo (id NUMERIC, nombre TEXT, contEntidad NUMERIC, contAtributo NUMERIC, contRelacion NUMERIC)")
-        c.execute("CREATE TABLE entidad (id INTEGER PRIMARY KEY, nombre TEXT, descripcion TEXT)")
-        c.execute("""CREATE TABLE atributo (id INTEGER PRIMARY KEY, id_entidad NUMERIC,
-                  nombre TEXT, nom_colum TEXT, descripcion TEXT, tipo_dato TEXT,
-                  long_dato NUMERIC, cla_prima NUMERIC, cla_fore NUMERIC, atri_n_null NUMERIC)""")
-        c.execute("""CREATE TABLE relacion (id INTEGER PRIMARY KEY, ent_padre NUMERIC,
-                ent_hija NUMERIC, tipo TEXT);""")        
-      c.close()
-      self.log = Log(self)
-      self.log.ConstruirStringModelo(str(datetime.datetime.now()), "Modelo: " + self.nombreArchivo, "Crear Tablas temporales / Crear Modelo")
-      self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Modelo'", "Crear Tablas temporales del Modelo")
-      self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Entidad'", "Crear Tablas temporales del Modelo")
-      self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Atributo'", "Crear Tablas temporales del Modelo")
-      self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Relacion'", "Crear Tablas temporales del Modelo")
-      self.conexion.commit()
-      ico = wx.Icon('images/mini_logo_cuc_trans.ico', wx.BITMAP_TYPE_ICO)
-      self.SetIcon(ico)
-      vbox = wx.BoxSizer(wx.VERTICAL)
-      self._mgr = wx.aui.AuiManager(self)
-      self.panel = wx.Panel(self, id=wx.ID_ANY, pos=(0, 0), size=(162, 162))
-      self.canvas = OGLCanvas(self, self)
-      self._mgr.AddPane(self.canvas, wx.aui.AuiPaneInfo().
-                        Name("Lienzo").Caption(self.parent.Idioma("Canvas")).
-                        Center().Layer(1).Position(1).CloseButton(False).MaximizeButton(True))
-      self._mgr.AddPane(self.panel, wx.aui.AuiPaneInfo().
-                        Name("Nav").Caption(self.parent.Idioma("Object Browser")).
-                        Left().Layer(1).Position(1).CloseButton(True).MaximizeButton(True))
-      self.nav = self._mgr.GetPane("Nav")
-      self.lienzo = self._mgr.GetPane("Lienzo")
-      self.Bind(wx.aui.EVT_AUI_PANE_CLOSE, self.OnPaneClose)
-      il = wx.ImageList(16,16)
-      self.imgEntPa = il.Add(wx.Image('images/entidadMiniPa.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap())
-      self.imgEnt = il.Add(wx.Image('images/entidadMini.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap())
-      self.imgAtrPa = il.Add(wx.Image('images/atributoMiniPa.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap())
-      self.imgAtr = il.Add(wx.Image('images/atributoMini.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap())
-      self.imgRelPa = il.Add(wx.Image('images/relacionMiniPa.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap())
-      self.imgRel = il.Add(wx.Image('images/relacionMini.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap())
-      self.tree = wx.TreeCtrl(self.panel, ID_TREE_FRAME, wx.DefaultPosition, wx.DefaultSize, wx.TR_HIDE_ROOT|wx.TR_HAS_BUTTONS)
-      self.tree.AssignImageList(il)
-      self.root = self.tree.AddRoot('Modelo')
-      self.treeEnti = self.tree.AppendItem(self.root, 'Entidades', image = self.imgEntPa)
-      self.treeRela = self.tree.AppendItem(self.root, 'Relaciones', image = self.imgRelPa)
-      self.tree.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnSelChangedRight, id=ID_TREE_FRAME)
-      self.tree.Bind(wx.EVT_TREE_ITEM_MIDDLE_CLICK, self.OnSelChangedRight, id=ID_TREE_FRAME)
-      self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelChangedLeft, id=ID_TREE_FRAME)
-      self.panel.SetSizer(vbox)
-      vbox.Add(self.tree, 1, wx.EXPAND)
-      self._mgr.Update()
-      self.Show()
-      self.contadorEntidad = int(model.getAttribute("entityCount"))
-      self.entidades = []
-      self.contadorAtributo = int(model.getAttribute("attributeCount"))
-      self.atributos = []
-      entidades = self.GetXMLTag(file, 'entity')
-      if entidades[0] != 0:
-        for entidad in entidades:
-          ejecute = Entidad(entidad.getAttribute("name"), entidad.getAttribute("description"), entidad.getAttribute("type"))
-          ejecute.CrearEntidad(parent, self.canvas, int(entidad.getAttribute("id")), float(entidad.getAttribute("posX")), float(entidad.getAttribute("posY")))
-          self.entidades.append(ejecute)
-          atributos = self.GetXMLTag(entidad.toxml("UTF-8"), 'attribute')
-          if atributos:
-            for atributo in atributos:
-              if atributo != 0:
-                if not str2bool(atributo.getAttribute("foreignKey")):
-                  ejecuteAtributo = Atributo(
-                    atributo.getAttribute("name"),
-                    atributo.getAttribute("columnName"),
-                    atributo.getAttribute("description"),
-                    atributo.getAttribute("dataType"),
-                    atributo.getAttribute("length"),
-                    atributo.getAttribute("primary"),
-                    atributo.getAttribute("notNull"),
-                    atributo.getAttribute("foreignKey")
-                    )
-                  ejecuteAtributo.CrearAtributo(self.canvas, ejecute, int(atributo.getAttribute("id")))
-      self.contadorRelacion = int(model.getAttribute("relationshipCount"))
-      self.relaciones = []
-      for relacion in self.GetXMLTag(file, 'relationship'):
-        if relacion != 0:
-          ejecutar = Relacion(
-            relacion.getAttribute("entityFather"),
-            relacion.getAttribute("entityChild"),
-            relacion.getAttribute("type"))
-          entidadPadre = Entidad()
-          entidadPadre.nombre = ejecutar.data["padre"]
-          entidadHija = Entidad()
-          entidadHija.nombre = ejecutar.data["hijo"]
-          ejecutar.CrearRelacion(
-            parent,
-            self.canvas,
-            entidadPadre,
-            entidadHija,
-            relacion.getAttribute("type"),
-            self.entidades,
-            cardinalidad = int(relacion.getAttribute("cardinality")),
-            cardinalidadExacta = int(relacion.getAttribute("cardinalityExactly")),
-            id = relacion.getAttribute("id"))
-      self.relacion = 0
-      self.click = 0
-      c = self.conexion.cursor()
-      c.execute("INSERT INTO modelo VALUES (1, '%s', 0, 0, 0)" % self.nombre)
-      c.close()
-      self.conexion.commit()
-      self.time = wx.Timer(self)
-      self.Bind(wx.EVT_TIMER, self.HiloGuardar, self.time)
-      self.Bind(wx.EVT_CLOSE, self.Cerrar)
-      self.time.Start(5000)
-      parent.menuFile.Enable(ID_GUARDAR_MODELO, True)
-      parent.menuFile.Enable(ID_GUARDAR_COMO_MODELO, True)
-      parent.menuFile.Enable(ID_EXPORTAR_MODELO, True)
-      parent.menuVer.Enable(ID_MENU_VER_REFRESCAR, True)
-      parent.menuVer.Enable(ID_MENU_VER_NAV, True)
-      parent.menuVer.Enable(ID_MENU_VER_CARD, True)
-      parent.menuTool.Enable(ID_CREAR_ENTIDAD, True)
-      parent.menuTool.Enable(ID_RELACION_IDENTIF, True)
-      parent.menuTool.Enable(ID_RELACION_NO_IDENTIF, True)
-      parent.menuTool.Enable(ID_GENERAR_SCRIPT, True)
-      parent.menuHelp.Enable(ID_MENU_HELP_LOG, True)
-      parent.toolBarStandard.EnableTool(ID_GUARDAR_MODELO, True)
-      parent.toolBarIdef1x.EnableTool(ID_CREAR_ENTIDAD, True)
-      parent.toolBarIdef1x.EnableTool(ID_RELACION_IDENTIF, True)
-      parent.toolBarIdef1x.EnableTool(ID_RELACION_NO_IDENTIF, True)
-      parent.toolBarStandard.EnableTool(ID_GENERAR_SCRIPT, True)
-      self.num = 0
-      self.parent = parent
-      self.canvas.Refresh()
-    else:
+    try:
+      model = self.GetXMLTag(file, 'model')[0]
+      if model:
+        self.nombre = model.getAttribute("name")
+        self.nombreArchivo = nameFile
+        self.file = file
+        self.SetTitle('%s *' % self.nombre)
+        self.log = Log(self)
+        self.log.ConstruirStringModelo(str(datetime.datetime.now()), "Modelo: " + self.nombreArchivo, "Crear Tablas temporales / Abrir Modelo")
+        self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Modelo'", "Crear Tablas temporales del Modelo")
+        self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Entidad'", "Crear Tablas temporales del Modelo")
+        self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Atributo'", "Crear Tablas temporales del Modelo")
+        self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Relacion'", "Crear Tablas temporales del Modelo")
+        if not os.path.exists("%s/db" % config.GetDataDir()):
+          os.makedirs("%s/db" % config.GetDataDir())
+        self.conexion = sqlite3.connect(os.path.join("%s/db" % config.GetDataDir(), "%s.db" % self.nombre))
+        c = self.conexion.cursor()
+        try:
+          c.execute("CREATE TABLE modelo (id NUMERIC, nombre TEXT, contEntidad NUMERIC, contAtributo NUMERIC, contRelacion NUMERIC)")
+          c.execute("CREATE TABLE entidad (id INTEGER PRIMARY KEY, nombre TEXT, descripcion TEXT)")
+          c.execute("""CREATE TABLE atributo (id INTEGER PRIMARY KEY, id_entidad NUMERIC,
+                    nombre TEXT, nom_colum TEXT, descripcion TEXT, tipo_dato TEXT,
+                    long_dato NUMERIC, cla_prima NUMERIC, cla_fore NUMERIC, atri_n_null NUMERIC)""")
+          c.execute("""CREATE TABLE relacion (id INTEGER PRIMARY KEY, ent_padre NUMERIC,
+                  ent_hija NUMERIC, tipo TEXT);""")
+        except:
+          c.execute("DROP TABLE modelo")
+          c.execute("DROP TABLE entidad")
+          c.execute("DROP TABLE atributo")
+          c.execute("DROP TABLE relacion")
+          c.execute("CREATE TABLE modelo (id NUMERIC, nombre TEXT, contEntidad NUMERIC, contAtributo NUMERIC, contRelacion NUMERIC)")
+          c.execute("CREATE TABLE entidad (id INTEGER PRIMARY KEY, nombre TEXT, descripcion TEXT)")
+          c.execute("""CREATE TABLE atributo (id INTEGER PRIMARY KEY, id_entidad NUMERIC,
+                    nombre TEXT, nom_colum TEXT, descripcion TEXT, tipo_dato TEXT,
+                    long_dato NUMERIC, cla_prima NUMERIC, cla_fore NUMERIC, atri_n_null NUMERIC)""")
+          c.execute("""CREATE TABLE relacion (id INTEGER PRIMARY KEY, ent_padre NUMERIC,
+                  ent_hija NUMERIC, tipo TEXT);""")        
+        c.close()
+        self.log = Log(self)
+        self.log.ConstruirStringModelo(str(datetime.datetime.now()), "Modelo: " + self.nombreArchivo, "Crear Tablas temporales / Crear Modelo")
+        self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Modelo'", "Crear Tablas temporales del Modelo")
+        self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Entidad'", "Crear Tablas temporales del Modelo")
+        self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Atributo'", "Crear Tablas temporales del Modelo")
+        self.log.ConstruirStringModelo(str(datetime.datetime.now()), "'Tabla Relacion'", "Crear Tablas temporales del Modelo")
+        self.conexion.commit()
+        ico = wx.Icon('images/mini_logo_cuc_trans.ico', wx.BITMAP_TYPE_ICO)
+        self.SetIcon(ico)
+        vbox = wx.BoxSizer(wx.VERTICAL)
+        self._mgr = wx.aui.AuiManager(self)
+        self.panel = wx.Panel(self, id=wx.ID_ANY, pos=(0, 0), size=(162, 162))
+        self.canvas = OGLCanvas(self, self)
+        self._mgr.AddPane(self.canvas, wx.aui.AuiPaneInfo().
+                          Name("Lienzo").Caption(self.parent.Idioma("Canvas")).
+                          Center().Layer(1).Position(1).CloseButton(False).MaximizeButton(True))
+        self._mgr.AddPane(self.panel, wx.aui.AuiPaneInfo().
+                          Name("Nav").Caption(self.parent.Idioma("Object Browser")).
+                          Left().Layer(1).Position(1).CloseButton(True).MaximizeButton(True))
+        self.nav = self._mgr.GetPane("Nav")
+        self.lienzo = self._mgr.GetPane("Lienzo")
+        self.Bind(wx.aui.EVT_AUI_PANE_CLOSE, self.OnPaneClose)
+        il = wx.ImageList(16,16)
+        self.imgEntPa = il.Add(wx.Image('images/entidadMiniPa.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+        self.imgEnt = il.Add(wx.Image('images/entidadMini.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+        self.imgAtrPa = il.Add(wx.Image('images/atributoMiniPa.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+        self.imgAtr = il.Add(wx.Image('images/atributoMini.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+        self.imgRelPa = il.Add(wx.Image('images/relacionMiniPa.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+        self.imgRel = il.Add(wx.Image('images/relacionMini.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+        self.tree = wx.TreeCtrl(self.panel, ID_TREE_FRAME, wx.DefaultPosition, wx.DefaultSize, wx.TR_HIDE_ROOT|wx.TR_HAS_BUTTONS)
+        self.tree.AssignImageList(il)
+        self.root = self.tree.AddRoot('Modelo')
+        self.treeEnti = self.tree.AppendItem(self.root, 'Entidades', image = self.imgEntPa)
+        self.treeRela = self.tree.AppendItem(self.root, 'Relaciones', image = self.imgRelPa)
+        self.tree.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnSelChangedRight, id=ID_TREE_FRAME)
+        self.tree.Bind(wx.EVT_TREE_ITEM_MIDDLE_CLICK, self.OnSelChangedRight, id=ID_TREE_FRAME)
+        self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelChangedLeft, id=ID_TREE_FRAME)
+        self.panel.SetSizer(vbox)
+        vbox.Add(self.tree, 1, wx.EXPAND)
+        self._mgr.Update()
+        self.Show()
+        self.contadorEntidad = int(model.getAttribute("entityCount"))
+        self.entidades = []
+        self.contadorAtributo = int(model.getAttribute("attributeCount"))
+        self.atributos = []
+        entidades = self.GetXMLTag(file, 'entity')
+        if entidades[0] != 0:
+          for entidad in entidades:
+            ejecute = Entidad(entidad.getAttribute("name"), entidad.getAttribute("description"), entidad.getAttribute("type"))
+            ejecute.CrearEntidad(parent, self.canvas, int(entidad.getAttribute("id")), float(entidad.getAttribute("posX")), float(entidad.getAttribute("posY")))
+            self.entidades.append(ejecute)
+            atributos = self.GetXMLTag(entidad.toxml("UTF-8"), 'attribute')
+            if atributos:
+              for atributo in atributos:
+                if atributo != 0:
+                  if not str2bool(atributo.getAttribute("foreignKey")):
+                    ejecuteAtributo = Atributo(
+                      atributo.getAttribute("name"),
+                      atributo.getAttribute("columnName"),
+                      atributo.getAttribute("description"),
+                      atributo.getAttribute("dataType"),
+                      atributo.getAttribute("length"),
+                      atributo.getAttribute("primary"),
+                      atributo.getAttribute("notNull"),
+                      atributo.getAttribute("foreignKey")
+                      )
+                    ejecuteAtributo.CrearAtributo(self.canvas, ejecute, int(atributo.getAttribute("id")))
+        self.contadorRelacion = int(model.getAttribute("relationshipCount"))
+        self.relaciones = []
+        for relacion in self.GetXMLTag(file, 'relationship'):
+          if relacion != 0:
+            ejecutar = Relacion(
+              relacion.getAttribute("entityFather"),
+              relacion.getAttribute("entityChild"),
+              relacion.getAttribute("type"))
+            entidadPadre = Entidad()
+            entidadPadre.nombre = ejecutar.data["padre"]
+            entidadHija = Entidad()
+            entidadHija.nombre = ejecutar.data["hijo"]
+            ejecutar.CrearRelacion(
+              parent,
+              self.canvas,
+              entidadPadre,
+              entidadHija,
+              relacion.getAttribute("type"),
+              self.entidades,
+              cardinalidad = int(relacion.getAttribute("cardinality")),
+              cardinalidadExacta = int(relacion.getAttribute("cardinalityExactly")),
+              id = relacion.getAttribute("id"))
+        self.relacion = 0
+        self.click = 0
+        c = self.conexion.cursor()
+        c.execute("INSERT INTO modelo VALUES (1, '%s', 0, 0, 0)" % self.nombre)
+        c.close()
+        self.conexion.commit()
+        self.time = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.HiloGuardar, self.time)
+        self.Bind(wx.EVT_CLOSE, self.Cerrar)
+        self.time.Start(5000)
+        parent.menuFile.Enable(ID_GUARDAR_MODELO, True)
+        parent.menuFile.Enable(ID_GUARDAR_COMO_MODELO, True)
+        parent.menuFile.Enable(ID_EXPORTAR_MODELO, True)
+        parent.menuVer.Enable(ID_MENU_VER_REFRESCAR, True)
+        parent.menuVer.Enable(ID_MENU_VER_NAV, True)
+        parent.menuVer.Enable(ID_MENU_VER_CARD, True)
+        parent.menuTool.Enable(ID_CREAR_ENTIDAD, True)
+        parent.menuTool.Enable(ID_RELACION_IDENTIF, True)
+        parent.menuTool.Enable(ID_RELACION_NO_IDENTIF, True)
+        parent.menuTool.Enable(ID_GENERAR_SCRIPT, True)
+        parent.menuHelp.Enable(ID_MENU_HELP_LOG, True)
+        parent.toolBarStandard.EnableTool(ID_GUARDAR_MODELO, True)
+        parent.toolBarIdef1x.EnableTool(ID_CREAR_ENTIDAD, True)
+        parent.toolBarIdef1x.EnableTool(ID_RELACION_IDENTIF, True)
+        parent.toolBarIdef1x.EnableTool(ID_RELACION_NO_IDENTIF, True)
+        parent.toolBarStandard.EnableTool(ID_GENERAR_SCRIPT, True)
+        self.num = 0
+        self.parent = parent
+        self.canvas.Refresh()
+      else:
+        self.num = 1
+    except:
       self.num = 1
 
   def ExportarModelo(self):
