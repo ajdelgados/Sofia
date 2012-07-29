@@ -196,10 +196,10 @@ class Entidad(ogl.CompositeShape):
       if atributo.clavePrimaria == True:
         num = 0
         for atributo2 in self.atributos:
-          if atributo.nombre == atributo2.nombre + ' (FK)':
-            num = 1
           if atributo.nombre == atributo2.nombre:
             num = 2
+            if atributo2.claveForanea == True:
+              num = 1
         if num != 1:
           addAtributo = Atributo()
           addAtributo.data["nombreAtributo"] = atributo.data["nombreAtributo"]
@@ -417,7 +417,6 @@ class Atributo():
             self.EliminarAtributo(canvas, entidad, elemento)
 
   def EliminarAtributo(self, canvas, entidad, atributoEliminar, relacion = 0):
-    print "Entre en Eliminar Atributo"
     try:
       dc = wx.ClientDC(canvas)
       entidad.atributos.remove(atributoEliminar)
@@ -439,14 +438,18 @@ class Atributo():
       for entidadHija in entidad.entidadesHijas:
         for atributo in entidadHija.atributos:
           continuar = 1
+          relacionEditar = 0
           if relacion != 0:
             if relacion.tipoRelacion == "No-Identificadora":
               continuar = 0
+          else:
+            for relacion in entidadHija.relaciones:
+              if relacion.entidadPadre.nombre == entidad.nombre and relacion.entidadHija.nombre == entidadHija.nombre:
+                relacionEditar = relacion
           if atributo.nombre == atributoEliminar.nombre and atributo.claveForanea == True and continuar:
-            self.EliminarAtributo(canvas, entidadHija, atributo)
+            self.EliminarAtributo(canvas, entidadHija, atributo, relacion)
     except:
-      print "Entre en except de Eliminar Atributo"
-      #pass
+      pass
   
   def ValidarNombreAtributo(self, frame, entidades):
     dial = wx.MessageDialog(frame, "Nombre del Atributo %s exite!" % self.data.get("nombreAtributo"), 'Error', wx.OK | wx.ICON_ERROR)
@@ -747,7 +750,6 @@ class Relacion(ogl.LineShape):
         print "En desarrollo."
 
   def EliminarRelacion(self, relacion, canvas, frame, entidades):
-    print "Entro en eliminar Relacion"
     if relacion.Selected():
       dc = wx.ClientDC(canvas)
       relacion.Select(False, dc)
