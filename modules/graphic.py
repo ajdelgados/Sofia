@@ -185,7 +185,7 @@ class Entidad(ogl.CompositeShape):
       ejecute = Atributo()
       ejecute.ModificarAtributosForma(dc, self)
 
-  def HeredarAtributos(self, entidad):
+  def HeredarAtributos(self, entidad, relacionTipo = 0):
     dc = wx.ClientDC(entidad.GetCanvas())
     ver = 1
     for relacion in self.relaciones:
@@ -196,15 +196,23 @@ class Entidad(ogl.CompositeShape):
       if atributo.clavePrimaria == True:
         num = 0
         for atributo2 in self.atributos:
+          if atributo.nombre == atributo2.nombre + ' (FK)':
+            num = 1
           if atributo.nombre == atributo2.nombre:
-            num =1
-        if num == 0:
+            num = 2
+        if num != 1:
           addAtributo = Atributo()
           addAtributo.data["nombreAtributo"] = atributo.data["nombreAtributo"]
           addAtributo.data["descripcion"] = atributo.data["descripcion"]
           addAtributo.data["primario"] = atributo.data["primario"]
           addAtributo.data["tipoDeAtributo"] = atributo.data["tipoDeAtributo"]
-          addAtributo.data["nombreColumna"] = atributo.data["nombreColumna"]
+          if num == 2:
+            if atributo.data["nombreColumna"]:
+              addAtributo.data["nombreColumna"] = "parent_" + atributo.data["nombreColumna"]
+            else:
+              addAtributo.data["nombreColumna"] = "parent_" + atributo.data["nombreAtributo"]
+          else:
+            addAtributo.data["nombreColumna"] = atributo.data["nombreColumna"]
           addAtributo.data["longitud"] = atributo.data["longitud"]
           addAtributo.data["autoIncremento"] = atributo.data["autoIncremento"]
           addAtributo.data["notNull"] = atributo.data["notNull"]
@@ -244,8 +252,9 @@ class Entidad(ogl.CompositeShape):
           self.atributosForma.SetSize(100, b)
           ejecute = Atributo()
           ejecute.ModificarAtributosForma(dc, self)
-    for entidadHija in self.entidadesHijas:
-      entidadHija.HeredarAtributos(self)
+    if self.nombre != entidad.nombre and relacionTipo:
+      for entidadHija in self.entidadesHijas:
+        entidadHija.HeredarAtributos(self)
 
   def ModificarAtributosHeredados(self, dc, atributoModificar):
     for atributo in self.atributos:
@@ -552,6 +561,7 @@ class Relacion(ogl.LineShape):
       self.id_relacion = id
     self.nombre = "rela" + str(self.id_relacion)
     if self.tipoRelacion == "Identificadora":
+      #if 
       self.SetPen(wx.BLACK_PEN)
       self.SetBrush(wx.BLACK_BRUSH)
       self.AddArrow(ogl.ARROW_FILLED_CIRCLE, end=0)
@@ -565,7 +575,7 @@ class Relacion(ogl.LineShape):
               hija.relaciones.append(self)
               hija.nombreForma.AddLine(self, padre.nombreForma)
               hija.TipoDeEntidad(canvas)
-              hija.HeredarAtributos(padre)
+              hija.HeredarAtributos(padre, 1)
               c = frame.GetActiveChild().conexion.cursor()
               c.execute("INSERT INTO relacion VALUES ( ?, ?, ?, ?)", (self.id_relacion, padre.id_entidad, hija.id_entidad, self.data["tipoDeRelacion"]))
               frame.GetActiveChild().log.ConstruirStringModelo(str(datetime.datetime.now()), "Relacion: " + "Id Relacion:  " + str(self.id_relacion), "Crear Relacion")
@@ -757,6 +767,21 @@ class Relacion(ogl.LineShape):
     frame.log.ConstruirStringModelo(str(datetime.datetime.now()), "Relacion: " + "Relacion:  " + str(relacion.id_relacion), "Eliminar Relacion")
     frame.conexion.commit()
 
+  def ComprobarRecursividad(self, entidades, entidadPadre, entidadHija, buscar = 0):
+    if buscar:
+      for padre in entidades:
+        if padre.nombre == entidadPadre.nombre:
+          for hija in entidades:
+            if hija.nombre == entidadHija.nombre:
+              entidadPadre = padre
+              entidadHija = hija
+    for padreEntidad in entidadHija.entidadesPadres:
+      if padreEntidad.nombre == entidadPadre.nombre:
+        return 1
+      if self.ComprobarRecursividad(entidades, entidadPadre, padreEntidad):
+        return 1
+    return 0
+
   def GetTipoRelacion(self):
     return self.tipoRelacion
 
@@ -767,6 +792,18 @@ class RelacionIdentificadora(Relacion):
     self.tipoRelacion = "Identificadora"
 
   def CrearRelacion (self, frame, canvas, entidadPadre, entidadHija, entidades, cardinalidad = 0, cardinalidadExacta = 0):
+    if entidadPadre.nombre == entidadHija.nombre:
+      dial = wx.MessageDialog(frame, 'No se puede crear una Relacion Identificadora Recursiva.\nDesea crear una relacion No-Identificadora?', 'Alerta', style=wx.OK | wx.CANCEL, pos=wx.DefaultPosition)
+      dial.ShowModal()
+      ejecute = RelacionNoIdentificadora()
+      ejecute.CrearRelacion(frame, canvas, entidadPadre, entidadHija, entidades, cardinalidad, cardinalidadExacta)
+      return 0
+    if self.ComprobarRecursividad(entidades, entidadHija, entidadPadre, buscar = 1):
+      dial = wx.MessageDialog(frame, 'No se puede crear una Relacion Identificadora Recursiva.\nDesea crear una relacion No-Identificadora?', 'Alerta', style=wx.OK | wx.CANCEL, pos=wx.DefaultPosition)
+      dial.ShowModal()
+      ejecute = RelacionNoIdentificadora()
+      ejecute.CrearRelacion(frame, canvas, entidadPadre, entidadHija, entidades, cardinalidad, cardinalidadExacta)
+      return 0
     self.data["padre"] = entidadPadre.nombre
     self.data["hijo"] = entidadHija.nombre
     self.data["tipoDeRelacion"] = self.tipoRelacion
@@ -774,7 +811,6 @@ class RelacionIdentificadora(Relacion):
     self.data["cardinalidadExacta"] = cardinalidadExacta
     self.frame = frame
     self.SetCanvas(canvas)
-    #frame.GetActiveChild().contadorRelacion = frame.GetActiveChild().contadorRelacion + 1
     self.id_relacion = frame.GetActiveChild().contadorRelacion
     self.nombre = "rela" + str(self.id_relacion)
     self.entidadPadre = entidadPadre
@@ -794,7 +830,7 @@ class RelacionIdentificadora(Relacion):
             hija.relaciones.append(self)
             hija.nombreForma.AddLine(self, padre.nombreForma)
             hija.TipoDeEntidad(canvas)
-            hija.HeredarAtributos(padre)
+            hija.HeredarAtributos(padre, 1)
             c = frame.GetActiveChild().conexion.cursor()
             c.execute("INSERT INTO relacion VALUES ( ?, ?, ?, ?)", (self.id_relacion, padre.id_entidad, hija.id_entidad, self.data["tipoDeRelacion"]))
             c.close()
@@ -830,7 +866,6 @@ class RelacionNoIdentificadora(Relacion):
     self.data["cardinalidadExacta"] = cardinalidadExacta
     self.frame = frame
     self.SetCanvas(canvas)
-    #frame.GetActiveChild().contadorRelacion = frame.GetActiveChild().contadorRelacion + 1
     self.id_relacion = frame.GetActiveChild().contadorRelacion
     self.nombre = "rela" + str(self.id_relacion)
     self.entidadPadre = entidadPadre
