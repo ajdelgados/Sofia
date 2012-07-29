@@ -416,7 +416,7 @@ class Atributo():
           if dlg.ShowModal() == wx.ID_YES:
             self.EliminarAtributo(canvas, entidad, elemento)
 
-  def EliminarAtributo(self, canvas, entidad, atributoEliminar):
+  def EliminarAtributo(self, canvas, entidad, atributoEliminar, relacion = 0):
     try:
       dc = wx.ClientDC(canvas)
       entidad.atributos.remove(atributoEliminar)
@@ -437,7 +437,15 @@ class Atributo():
       self.ModificarAtributosForma(dc, entidad)
       for entidadHija in entidad.entidadesHijas:
         for atributo in entidadHija.atributos:
-          if atributo.nombre == atributoEliminar.nombre:
+          continuar = 1
+          """for relacion in entidadHija.relaciones:
+            if relacion.entidadPadre.nombre == self.nombre:
+              if relacion.tipoRelacion == "Identificadora":
+                continuar = 1"""
+          if relacion != 0:
+            if relacion.tipoRelacion == "No-Identificadora":
+              continuar = 0
+          if atributo.nombre == atributoEliminar.nombre and continuar:
             self.EliminarAtributo(canvas, entidadHija, atributo)
     except:
       pass
@@ -750,11 +758,11 @@ class Relacion(ogl.LineShape):
       if entidad.nombre == relacion.entidadHija.nombre:
         for atributo in entidad.atributos:
           for atributoHeredado in relacion.atributosHeredados:
-            if atributo.nombre ==  atributoHeredado.nombre:
+            if atributo.nombre ==  atributoHeredado.nombre and atributo.claveForanea == True:
               eliminar.append(atributo)
         for elemento in eliminar:
           ejecute = Atributo()
-          ejecute.EliminarAtributo(canvas, entidad, elemento)
+          ejecute.EliminarAtributo(canvas, entidad, elemento, relacion)
         entidad.relaciones.remove(relacion)
         entidad.TipoDeEntidad(canvas)
       if entidad.nombre == relacion.entidadPadre.nombre:
