@@ -765,6 +765,9 @@ class Relacion(ogl.LineShape):
           ejecute.EliminarAtributo(canvas, entidad, elemento, relacion)
         entidad.relaciones.remove(relacion)
         entidad.TipoDeEntidad(canvas)
+        for entidadPadre in entidad.entidadesPadres:
+          if entidadPadre.nombre == relacion.entidadPadre.nombre:
+            entidad.entidadesPadres.remove(entidadPadre)
       if entidad.nombre == relacion.entidadPadre.nombre:
         for entidadHija in entidad.entidadesHijas:
           if entidadHija.nombre == relacion.entidadHija.nombre:
