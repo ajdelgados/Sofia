@@ -417,6 +417,7 @@ class Atributo():
             self.EliminarAtributo(canvas, entidad, elemento)
 
   def EliminarAtributo(self, canvas, entidad, atributoEliminar, relacion = 0):
+    print "Entre en Eliminar Atributo"
     try:
       dc = wx.ClientDC(canvas)
       entidad.atributos.remove(atributoEliminar)
@@ -438,17 +439,14 @@ class Atributo():
       for entidadHija in entidad.entidadesHijas:
         for atributo in entidadHija.atributos:
           continuar = 1
-          """for relacion in entidadHija.relaciones:
-            if relacion.entidadPadre.nombre == self.nombre:
-              if relacion.tipoRelacion == "Identificadora":
-                continuar = 1"""
           if relacion != 0:
             if relacion.tipoRelacion == "No-Identificadora":
               continuar = 0
-          if atributo.nombre == atributoEliminar.nombre and continuar:
+          if atributo.nombre == atributoEliminar.nombre and atributo.claveForanea == True and continuar:
             self.EliminarAtributo(canvas, entidadHija, atributo)
     except:
-      pass
+      print "Entre en except de Eliminar Atributo"
+      #pass
   
   def ValidarNombreAtributo(self, frame, entidades):
     dial = wx.MessageDialog(frame, "Nombre del Atributo %s exite!" % self.data.get("nombreAtributo"), 'Error', wx.OK | wx.ICON_ERROR)
@@ -749,6 +747,7 @@ class Relacion(ogl.LineShape):
         print "En desarrollo."
 
   def EliminarRelacion(self, relacion, canvas, frame, entidades):
+    print "Entro en eliminar Relacion"
     if relacion.Selected():
       dc = wx.ClientDC(canvas)
       relacion.Select(False, dc)
