@@ -254,7 +254,12 @@ class Entidad(ogl.CompositeShape):
           ejecute.ModificarAtributosForma(dc, self)
     if self.nombre != entidad.nombre and relacionTipo:
       for entidadHija in self.entidadesHijas:
-        entidadHija.HeredarAtributos(self)
+        continuar = 0
+        for relacion in entidadHija.relaciones:
+          if relacion.entidadPadre.nombre == self.nombre:
+            if relacion.tipoRelacion == "Identificadora":
+              continuar = 1
+        entidadHija.HeredarAtributos(self, continuar)
 
   def ModificarAtributosHeredados(self, dc, atributoModificar):
     for atributo in self.atributos:
