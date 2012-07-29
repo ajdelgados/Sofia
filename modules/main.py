@@ -415,7 +415,7 @@ class MainFrame(wx.aui.AuiMDIParentFrame):
       ejecute.CrearAtributo(self.GetActiveChild().canvas, ejecute.elemento, self.GetActiveChild().contadorAtributo)
       self.GetActiveChild().contadorAtributo += 1
       for entidadHija in ejecute.elemento.entidadesHijas:
-        entidadHija.HeredarAtributos(ejecute.elemento)
+        entidadHija.HeredarAtributos(ejecute.elemento, 1)
     """else:
       dlg = wx.TextEntryDialog(None, "cual entidad agregar un atributo?", 'Agregar Atributo', '')
       if dlg.ShowModal() == wx.ID_OK:
