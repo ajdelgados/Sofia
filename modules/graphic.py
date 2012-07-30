@@ -416,7 +416,7 @@ class Atributo():
           if dlg.ShowModal() == wx.ID_YES:
             self.EliminarAtributo(canvas, entidad, elemento)
 
-  def EliminarAtributo(self, canvas, entidad, atributoEliminar, relacion = 0):
+  def EliminarAtributo(self, canvas, entidad, atributoEliminar, relacion = 0, continuaDesdeAnterior = 1):
     try:
       dc = wx.ClientDC(canvas)
       entidad.atributos.remove(atributoEliminar)
@@ -438,16 +438,19 @@ class Atributo():
       for entidadHija in entidad.entidadesHijas:
         for atributo in entidadHija.atributos:
           continuar = 1
+          continuarEnProximo = 1
           relacionEditar = 0
-          if relacion != 0:
+          if relacion:
             if relacion.tipoRelacion == "No-Identificadora":
-              continuar = 0
-          else:
+              continuarEnProximo = 0
+          try:
             for relacion in entidadHija.relaciones:
               if relacion.entidadPadre.nombre == entidad.nombre and relacion.entidadHija.nombre == entidadHija.nombre:
                 relacionEditar = relacion
-          if atributo.nombre == atributoEliminar.nombre and atributo.claveForanea == True and continuar:
-            self.EliminarAtributo(canvas, entidadHija, atributo, relacion)
+          except:
+            pass
+          if atributo.nombre == atributoEliminar.nombre and atributo.claveForanea == True and continuar and continuaDesdeAnterior:
+            self.EliminarAtributo(canvas, entidadHija, atributo, relacionEditar, continuarEnProximo)
     except:
       pass
   
@@ -794,7 +797,10 @@ class Relacion(ogl.LineShape):
               entidadHija = hija
     for padreEntidad in entidadHija.entidadesPadres:
       if padreEntidad.nombre == entidadPadre.nombre:
-        return 1
+        for relacion in entidadHija.relaciones:
+          if padreEntidad.nombre == relacion.entidadPadre.nombre:
+            if relacion.tipoRelacion == "Identificadora":
+              return 1
       if self.ComprobarRecursividad(entidades, entidadPadre, padreEntidad):
         return 1
     return 0
