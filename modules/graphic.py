@@ -740,12 +740,14 @@ class Relacion(ogl.LineShape):
         entidadHija = Entidad()
         entidadHija.nombre = relacion.data["hijo"]
         self.EliminarRelacion(relacion, canvas, frame.GetActiveChild(), entidades)
-        newRelacion.CrearRelacion(frame, canvas, entidadPadre, entidadHija, entidades, relacion.data["cardinalidad"], relacion.data["cardinalidadExacta"])
-        frame.GetActiveChild().contadorRelacion += 1
-        frame.GetActiveChild().log.ConstruirStringModelo(str(datetime.datetime.now()), "Relacion: " + "Entidad Padre:  " + entidadPadre.nombre, "Modificar Relacion")
-        frame.GetActiveChild().log.ConstruirStringModelo(str(datetime.datetime.now()), "Relacion: " + "Entidad Hija:  " + entidadHija.nombre, "Modificar Relacion")
-        frame.GetActiveChild().log.ConstruirStringModelo(str(datetime.datetime.now()), "Relacion: " + "Cardinalidad:  " + str(relacion.data["cardinalidad"]), "Modificar Relacion")
-        frame.GetActiveChild().log.ConstruirStringModelo(str(datetime.datetime.now()), "Relacion: " + "Cardinalidad Exacta:  " + str(relacion.data["cardinalidadExacta"]), "Modificar Relacion")
+        if newRelacion.CrearRelacion(frame, canvas, entidadPadre, entidadHija, entidades, relacion.data["cardinalidad"], relacion.data["cardinalidadExacta"]):
+          frame.GetActiveChild().contadorRelacion += 1
+          frame.GetActiveChild().log.ConstruirStringModelo(str(datetime.datetime.now()), "Relacion: " + "Entidad Padre:  " + entidadPadre.nombre, "Modificar Relacion")
+          frame.GetActiveChild().log.ConstruirStringModelo(str(datetime.datetime.now()), "Relacion: " + "Entidad Hija:  " + entidadHija.nombre, "Modificar Relacion")
+          frame.GetActiveChild().log.ConstruirStringModelo(str(datetime.datetime.now()), "Relacion: " + "Cardinalidad:  " + str(relacion.data["cardinalidad"]), "Modificar Relacion")
+          frame.GetActiveChild().log.ConstruirStringModelo(str(datetime.datetime.now()), "Relacion: " + "Cardinalidad Exacta:  " + str(relacion.data["cardinalidadExacta"]), "Modificar Relacion")
+        else:
+          canvas.Refresh()
       elif relacion.data["tipoDeRelacion"] == "No-Identificadora":
         newRelacion = RelacionNoIdentificadora()
         entidadPadre = Entidad()
@@ -878,6 +880,7 @@ class RelacionIdentificadora(Relacion):
     self.OnCardinalidad()
     self._regions[1].SetPosition(0, 20)
     frame.GetActiveChild().relaciones.append(self)
+    return 1
 
 class RelacionNoIdentificadora(Relacion):
 
