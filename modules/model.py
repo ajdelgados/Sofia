@@ -402,7 +402,8 @@ class Modelo(wx.aui.AuiMDIChildFrame):
               self.entidades,
               cardinalidad = int(relacion.getAttribute("cardinality")),
               cardinalidadExacta = int(relacion.getAttribute("cardinalityExactly")),
-              id = relacion.getAttribute("id"))
+              id = relacion.getAttribute("id"),
+              directo = 0)
         self.relacion = 0
         self.click = 0
         c = self.conexion.cursor()

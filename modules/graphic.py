@@ -412,6 +412,10 @@ class Atributo():
       response = dlg.GetStringSelection()
       for elemento in entidad.atributos:
         if elemento.nombre == response:
+          if elemento.claveForanea == True:
+            dial = wx.MessageDialog(canvas.frame, canvas.frame.parent.Idioma(archivo[ATRIBUTO_ELIMINAR_ERROR]) % elemento.nombre, 'Error', wx.OK | wx.ICON_ERROR)
+            dial.ShowModal()
+            return
           dlg = wx.MessageDialog(canvas.frame, canvas.frame.parent.Idioma("Want to remove the attribute %s") % elemento.nombre, canvas.frame.parent.Idioma("Delete Attribute %s") % elemento.nombre, wx.YES_NO | wx.ICON_QUESTION)
           if dlg.ShowModal() == wx.ID_YES:
             self.EliminarAtributo(canvas, entidad, elemento)
@@ -437,19 +441,20 @@ class Atributo():
       self.ModificarAtributosForma(dc, entidad)
       for entidadHija in entidad.entidadesHijas:
         for atributo in entidadHija.atributos:
-          continuar = 1
           continuarEnProximo = 1
           relacionEditar = 0
           if relacion:
             if relacion.tipoRelacion == "No-Identificadora":
               continuarEnProximo = 0
           try:
-            for relacion in entidadHija.relaciones:
-              if relacion.entidadPadre.nombre == entidad.nombre and relacion.entidadHija.nombre == entidadHija.nombre:
-                relacionEditar = relacion
+            for relacionHija in entidadHija.relaciones:
+              if relacionHija.entidadPadre.nombre == entidad.nombre and relacionHija.entidadHija.nombre == entidadHija.nombre:
+                relacionEditar = relacionHija
+                if relacionHija.tipoRelacion == "No-Identificadora":
+                  continuarEnProximo = 0
           except:
             pass
-          if atributo.nombre == atributoEliminar.nombre and atributo.claveForanea == True and continuar and continuaDesdeAnterior:
+          if atributo.nombre == atributoEliminar.nombre and atributo.claveForanea == True and continuaDesdeAnterior:
             self.EliminarAtributo(canvas, entidadHija, atributo, relacionEditar, continuarEnProximo)
     except:
       pass
@@ -562,7 +567,13 @@ class Relacion(ogl.LineShape):
       self.CrearRelacion(frame, canvas, entidadPadre, entidadHija, self.data["tipoDeRelacion"], entidades, self.data["cardinalidad"], self.data["cardinalidadExacta"])
       frame.GetActiveChild().contadorRelacion += 1
 
-  def CrearRelacion(self, frame, canvas, entidadPadre, entidadHija, tipoRelacion, entidades, cardinalidad = 0, cardinalidadExacta = 0, id = -1):
+  def CrearRelacion(self, frame, canvas, entidadPadre, entidadHija, tipoRelacion, entidades, cardinalidad = 0, cardinalidadExacta = 0, id = -1, directo = 1):
+    if directo and (entidadPadre.nombre == entidadHija.nombre or self.ComprobarRecursividad(entidades, entidadHija, entidadPadre, buscar = 1)):
+      dial = wx.MessageDialog(frame, 'No se puede crear una Relacion Identificadora Recursiva.\nDesea crear una relacion No-Identificadora?', 'Alerta', style=wx.OK | wx.CANCEL, pos=wx.DefaultPosition)
+      if dial.ShowModal() == wx.ID_OK:
+        tipoRelacion = 'No-Identificadora'
+      else:
+        return 0
     self.frame = frame
     self.SetCanvas(canvas)
     self.entidadPadre = entidadPadre
@@ -578,7 +589,6 @@ class Relacion(ogl.LineShape):
       self.id_relacion = id
     self.nombre = "rela" + str(self.id_relacion)
     if self.tipoRelacion == "Identificadora":
-      #if 
       self.SetPen(wx.BLACK_PEN)
       self.SetBrush(wx.BLACK_BRUSH)
       self.AddArrow(ogl.ARROW_FILLED_CIRCLE, end=0)
@@ -766,7 +776,7 @@ class Relacion(ogl.LineShape):
               eliminar.append(atributo)
         for elemento in eliminar:
           ejecute = Atributo()
-          ejecute.EliminarAtributo(canvas, entidad, elemento, relacion)
+          ejecute.EliminarAtributo(canvas, entidad, elemento, relacion, relacion.tipoRelacion != "No-Identificadora")
         entidad.relaciones.remove(relacion)
         entidad.TipoDeEntidad(canvas)
         for entidadPadre in entidad.entidadesPadres:
@@ -815,17 +825,11 @@ class RelacionIdentificadora(Relacion):
     self.tipoRelacion = "Identificadora"
 
   def CrearRelacion (self, frame, canvas, entidadPadre, entidadHija, entidades, cardinalidad = 0, cardinalidadExacta = 0):
-    if entidadPadre.nombre == entidadHija.nombre:
+    if entidadPadre.nombre == entidadHija.nombre or self.ComprobarRecursividad(entidades, entidadHija, entidadPadre, buscar = 1):
       dial = wx.MessageDialog(frame, 'No se puede crear una Relacion Identificadora Recursiva.\nDesea crear una relacion No-Identificadora?', 'Alerta', style=wx.OK | wx.CANCEL, pos=wx.DefaultPosition)
-      dial.ShowModal()
-      ejecute = RelacionNoIdentificadora()
-      ejecute.CrearRelacion(frame, canvas, entidadPadre, entidadHija, entidades, cardinalidad, cardinalidadExacta)
-      return 0
-    if self.ComprobarRecursividad(entidades, entidadHija, entidadPadre, buscar = 1):
-      dial = wx.MessageDialog(frame, 'No se puede crear una Relacion Identificadora Recursiva.\nDesea crear una relacion No-Identificadora?', 'Alerta', style=wx.OK | wx.CANCEL, pos=wx.DefaultPosition)
-      dial.ShowModal()
-      ejecute = RelacionNoIdentificadora()
-      ejecute.CrearRelacion(frame, canvas, entidadPadre, entidadHija, entidades, cardinalidad, cardinalidadExacta)
+      if dial.ShowModal() == wx.ID_OK:
+        ejecute = RelacionNoIdentificadora()
+        ejecute.CrearRelacion(frame, canvas, entidadPadre, entidadHija, entidades, cardinalidad, cardinalidadExacta)
       return 0
     self.data["padre"] = entidadPadre.nombre
     self.data["hijo"] = entidadHija.nombre
