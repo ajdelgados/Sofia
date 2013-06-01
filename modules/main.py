@@ -10,6 +10,7 @@ from id import *
 from model import *
 from graphic import *
 from sql import *
+from django import *
 
 import sqlite3
 from xml.dom import minidom
@@ -92,6 +93,8 @@ class MainFrame(wx.aui.AuiMDIParentFrame):
     self.menuTool.AppendSeparator()
     self.menuTool.Append(ID_GENERAR_SCRIPT, self.translation(archivo[ID_GENERAR_SCRIPT]), self.translation(archivoHelp[ID_GENERAR_SCRIPT]))
     self.menuTool.Enable(ID_GENERAR_SCRIPT, False)
+    self.menuTool.Append(ID_GENERAR_SCRIPT_DJANGO, archivo[ID_GENERAR_SCRIPT_DJANGO], archivoHelp[ID_GENERAR_SCRIPT_DJANGO])
+    self.menuTool.Enable(ID_GENERAR_SCRIPT_DJANGO, False)
     #self.menuTool.Append(ID_GUARDAR_SCRIPT, "Guardar Script SQL", "Guarda el Script SQL del modelo para PostgreSQL")
 #Menu de Ayuda
     self.menuHelp = wx.Menu()
@@ -156,6 +159,8 @@ class MainFrame(wx.aui.AuiMDIParentFrame):
     self.toolBarStandard.AddSeparator()
     self.toolBarStandard.AddLabelTool(ID_GENERAR_SCRIPT, self.translation(archivo[ID_GENERAR_SCRIPT]), wx.Bitmap('images/2_sqlLogo.png') )
     self.toolBarStandard.EnableTool(ID_GENERAR_SCRIPT, False)
+    self.toolBarStandard.AddLabelTool(ID_GENERAR_SCRIPT_DJANGO, archivo[ID_GENERAR_SCRIPT_DJANGO], wx.Bitmap('images/django.png') )
+    self.toolBarStandard.EnableTool(ID_GENERAR_SCRIPT_DJANGO, False)
     self.toolBarStandard.Realize()
     
     self._mgr.AddPane(self.toolBarStandard, wx.aui.AuiPaneInfo().
@@ -224,6 +229,7 @@ class MainFrame(wx.aui.AuiMDIParentFrame):
     self.Bind(wx.EVT_MENU, self.ModificarRelacion, id = ID_MODIFICAR_RELACION)
     self.Bind(wx.EVT_MENU, self.EliminarRelacion, id = ID_ELIMINAR_RELACION)
     self.Bind(wx.EVT_MENU, self.GenerarScriptSql, id = ID_GENERAR_SCRIPT)
+    self.Bind(wx.EVT_MENU, self.GenerarScriptDjango, id = ID_GENERAR_SCRIPT_DJANGO)
     #self.Bind(wx.EVT_MENU, self.GuardarScriptSql, id = ID_GUARDAR_SCRIPT)
     #self.Bind(wx.EVT_MENU, self.ActualizarIdioma, id=ID_MENU_HELP_us_US )
     #self.Bind(wx.EVT_MENU, self.ActualizarIdioma, id=ID_MENU_HELP_es_ES )
@@ -415,7 +421,7 @@ class MainFrame(wx.aui.AuiMDIParentFrame):
       ejecute.CrearAtributo(self.GetActiveChild().canvas, ejecute.elemento, self.GetActiveChild().contadorAtributo)
       self.GetActiveChild().contadorAtributo += 1
       for entidadHija in ejecute.elemento.entidadesHijas:
-        entidadHija.HeredarAtributos(ejecute.elemento)
+        entidadHija.HeredarAtributos(ejecute.elemento, 1)
     """else:
       dlg = wx.TextEntryDialog(None, "cual entidad agregar un atributo?", 'Agregar Atributo', '')
       if dlg.ShowModal() == wx.ID_OK:
@@ -509,7 +515,13 @@ class MainFrame(wx.aui.AuiMDIParentFrame):
     dlg = Dialogos(self, "Script SQL")
     dlg.ScriptSql(script)
     dlg.ShowModal()
-  
+
+  def GenerarScriptDjango(self, evt):
+    script = Django().ScriptDjango(self.GetActiveChild())
+    dlg = Dialogos(self, "Script Django")
+    dlg.ScriptSql(script)
+    dlg.ShowModal()
+
   def GuardarScriptSql(self, evt):
     script = SQL().ScriptPostgreSQL(self.GetActiveChild())
     tempFile = wx.FileDialog(self, message="Guardar SQL", defaultDir=os.path.expanduser("~"), defaultFile="sofiaSQL", wildcard="Archivos SQL (*.sql)|*.sql", style=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT)

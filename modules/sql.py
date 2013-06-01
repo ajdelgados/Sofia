@@ -11,7 +11,7 @@ class SQL():
     ["NUMERIC", 1], ["SERIAL", 0], ["TEXT", 0], ["TIME WITHOUT TIME ZONE", 0], ["VARCHAR", 1]]
 
   def ScriptPostgreSQL(self, proyecto):
-    text = "-- Script generado por el Software Sofia v0.072 para PostgreSQL.\n"
+    text = "-- Script generado por el Software Sofia v0.073 para PostgreSQL.\n"
     for entidad in proyecto.entidades:
       atributoText = ""
       primariKey = ""

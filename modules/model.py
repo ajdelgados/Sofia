@@ -147,12 +147,14 @@ class Modelo(wx.aui.AuiMDIChildFrame):
       parent.menuTool.Enable(ID_RELACION_IDENTIF, True)
       parent.menuTool.Enable(ID_RELACION_NO_IDENTIF, True)
       parent.menuTool.Enable(ID_GENERAR_SCRIPT, True)
+      parent.menuTool.Enable(ID_GENERAR_SCRIPT_DJANGO, True)
       parent.menuHelp.Enable(ID_MENU_HELP_LOG, True)
       parent.toolBarStandard.EnableTool(ID_GUARDAR_MODELO, True)
       parent.toolBarIdef1x.EnableTool(ID_CREAR_ENTIDAD, True)
       parent.toolBarIdef1x.EnableTool(ID_RELACION_IDENTIF, True)
       parent.toolBarIdef1x.EnableTool(ID_RELACION_NO_IDENTIF, True)
       parent.toolBarStandard.EnableTool(ID_GENERAR_SCRIPT, True)
+      parent.toolBarStandard.EnableTool(ID_GENERAR_SCRIPT_DJANGO, True)
       self.num = 0
       #self.parent = parent
     else:
@@ -402,7 +404,8 @@ class Modelo(wx.aui.AuiMDIChildFrame):
               self.entidades,
               cardinalidad = int(relacion.getAttribute("cardinality")),
               cardinalidadExacta = int(relacion.getAttribute("cardinalityExactly")),
-              id = relacion.getAttribute("id"))
+              id = relacion.getAttribute("id"),
+              directo = 0)
         self.relacion = 0
         self.click = 0
         c = self.conexion.cursor()
@@ -423,12 +426,14 @@ class Modelo(wx.aui.AuiMDIChildFrame):
         parent.menuTool.Enable(ID_RELACION_IDENTIF, True)
         parent.menuTool.Enable(ID_RELACION_NO_IDENTIF, True)
         parent.menuTool.Enable(ID_GENERAR_SCRIPT, True)
+        parent.menuTool.Enable(ID_GENERAR_SCRIPT_DJANGO, True)
         parent.menuHelp.Enable(ID_MENU_HELP_LOG, True)
         parent.toolBarStandard.EnableTool(ID_GUARDAR_MODELO, True)
         parent.toolBarIdef1x.EnableTool(ID_CREAR_ENTIDAD, True)
         parent.toolBarIdef1x.EnableTool(ID_RELACION_IDENTIF, True)
         parent.toolBarIdef1x.EnableTool(ID_RELACION_NO_IDENTIF, True)
         parent.toolBarStandard.EnableTool(ID_GENERAR_SCRIPT, True)
+        parent.toolBarStandard.EnableTool(ID_GENERAR_SCRIPT_DJANGO, True)
         self.num = 0
         self.parent = parent
         self.canvas.Refresh()
@@ -631,12 +636,14 @@ class Modelo(wx.aui.AuiMDIChildFrame):
       self.parent.menuTool.Enable(ID_RELACION_IDENTIF, False)
       self.parent.menuTool.Enable(ID_RELACION_NO_IDENTIF, False)
       self.parent.menuTool.Enable(ID_GENERAR_SCRIPT, False)
+      self.parent.menuTool.Enable(ID_GENERAR_SCRIPT_DJANGO, False)
       self.parent.menuHelp.Enable(ID_MENU_HELP_LOG, False)
       self.parent.toolBarStandard.EnableTool(ID_GUARDAR_MODELO, False)
       self.parent.toolBarIdef1x.EnableTool(ID_CREAR_ENTIDAD, False)
       self.parent.toolBarIdef1x.EnableTool(ID_RELACION_IDENTIF, False)
       self.parent.toolBarIdef1x.EnableTool(ID_RELACION_NO_IDENTIF, False)
       self.parent.toolBarStandard.EnableTool(ID_GENERAR_SCRIPT, False)
+      self.parent.toolBarStandard.EnableTool(ID_GENERAR_SCRIPT_DJANGO, False)
 
   def OnPaneClose(self, event):
     if event.GetPane().name == 'Nav':

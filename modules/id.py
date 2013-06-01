@@ -156,9 +156,13 @@ ID_ELIMINAR_RELACION = wx.NewId()
 archivo[ID_ELIMINAR_RELACION] = 'Delete Relationship'
 archivoHelp[ID_ELIMINAR_RELACION] = 'Delete Relationship'
 
-ID_GENERAR_SCRIPT= wx.NewId()
+ID_GENERAR_SCRIPT = wx.NewId()
 archivo[ID_GENERAR_SCRIPT] = 'Gene&rate SQL Script'
 archivoHelp[ID_GENERAR_SCRIPT] = 'Generate the SQL script for PostgreSQL'
+
+ID_GENERAR_SCRIPT_DJANGO = wx.NewId()
+archivo[ID_GENERAR_SCRIPT_DJANGO] = 'Generate Script Django'
+archivoHelp[ID_GENERAR_SCRIPT_DJANGO] = 'Generate the script for Django'
 
 #ID_GUARDAR_SCRIPT= wx.NewId()
 
